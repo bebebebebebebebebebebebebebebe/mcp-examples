@@ -4,7 +4,7 @@ import { renderer } from '@/client/renderer'
 import { createStructuredLoggerMiddleware } from '@/config/logger';
 import { requestId } from "hono/request-id";
 import apiRoot from "@/api/index";
-import handler from '@/mcp/handler';
+import handler from '@/mcp/index';
 import type { Context } from 'hono';
 
 type AppContext = {

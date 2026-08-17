@@ -1,10 +1,6 @@
-import {
-  createMcpHandler,
-  McpServerFactory,
-  McpServer,
-  AnyToolHandler,
-} from "@modelcontextprotocol/server";
-import { ToolSchema, getNoteToolHandler, getNoteInputSchema } from "./tools";
+import { createMcpHandler, McpServer } from "@modelcontextprotocol/server";
+import { ToolSchema } from "./schemas";
+import { userTools } from "@/features/users/tools";
 
 export const createMcpServer = (
   name: string,
@@ -27,14 +23,7 @@ export const createMcpServer = (
 };
 
 const handler = createMcpHandler(() =>
-  createMcpServer("note-tools", [
-    {
-      name: "get-note",
-      description: "get note data",
-      handler: getNoteToolHandler,
-      inputSchema: getNoteInputSchema,
-    },
-  ]),
+  createMcpServer("users-mcp-server", [...userTools], "1.0.0"),
 );
 
 export default handler;

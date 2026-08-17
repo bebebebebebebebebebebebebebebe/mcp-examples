@@ -36,12 +36,18 @@ export const initMcpClient = async ({
 const main = async () => {
   console.log("MCP client module loaded.");
   const baseUrl = process.env.MCP_SERVER_URL || "http://localhost:4173";
-  const name = process.env.MCP_CLIENT_NAME || "note-client";
+  const name = process.env.MCP_CLIENT_NAME || "users-mcp-client";
   const version = process.env.MCP_CLIENT_VERSION || "1.0.0";
   const client = await initMcpClient({ baseUrl: `${baseUrl}/mcp`, name, version });
-  console.log(`MCP client connected to ${baseUrl} as ${name} v${version}`);
-  const result = await client.callTool({name: "get-note", arguments: {}});
-  console.log("Tool result:", JSON.stringify(result, null, 2));
+  const response = await client.callTool({
+    name: "get-user-by-id",
+    arguments: {
+      id: 1,
+    },
+  });
+  console.log("Tool response:", JSON.stringify(response, null, 2));
+  const toolResults = response.structuredContent;
+  console.log("Structured content:", JSON.stringify(toolResults, null, 2));
 }
 
 main().catch((err) => {

@@ -14,7 +14,7 @@
         "./src/*"
       ]
     },
-    "types": ["vite/client"],
+    "types": ["vite/client", "bun"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx"
   },

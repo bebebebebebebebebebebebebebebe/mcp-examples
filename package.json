@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test": "bun test",
     "preview": "$npm_execpath run build && vite preview",
     "mcp:preview": "$npm_execpath run build && sh scripts/mcp-preview.sh",
     "deploy": "$npm_execpath run build && wrangler deploy",
@@ -11,9 +12,11 @@
   },
   "dependencies": {
     "@hono/structured-logger": "^0.1.0",
+    "@hono/zod-validator": "^0.9.0",
     "@modelcontextprotocol/client": "^2.0.0",
     "@modelcontextprotocol/hono": "^2.0.0",
     "@modelcontextprotocol/server": "^2.0.0",
+    "better-auth": "^1.6.29",
     "hono": "^4.13.0",
     "zod": "^4.4.3"
   },
