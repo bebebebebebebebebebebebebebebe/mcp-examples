@@ -1,6 +1,9 @@
 import {
+  createPostResponseSchema,
   getPostsResponseSchema,
   getPostByIdResponseSchema,
+  type CreatePostBody,
+  type CreatePostResponse,
   type GetPostsQuery,
   type GetPostsResponse,
   type GetPostByIdResponse,
@@ -61,4 +64,27 @@ export async function getPostById(id: number): Promise<GetPostByIdResponse> {
 
   const rawData = await response.json();
   return getPostByIdResponseSchema.parse(rawData);
+}
+
+/**
+ * 投稿作成
+ */
+export async function createPost(
+  input: CreatePostBody,
+): Promise<CreatePostResponse> {
+  const response = await fetch(BASE_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    throw new ExternalApiError(response.status, "投稿の作成に失敗しました");
+  }
+
+  const rawData = await response.json();
+
+  return createPostResponseSchema.parse(rawData);
 }

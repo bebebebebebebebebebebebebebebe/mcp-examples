@@ -1,7 +1,13 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { getPostsQuerySchema, getPostByIdParamsSchema } from "./schemas";
 import {
+  createPostBodySchema,
+  getPostsQuerySchema,
+  getPostByIdParamsSchema,
+} from "./schemas";
+
+import {
+  createPost,
   getPosts,
   getPostById,
   PostNotFoundError,
@@ -81,6 +87,60 @@ postRoutes.get(
       }
       return c.json(
         { success: false, message: "予期せぬエラーが発生しました" },
+        500,
+      );
+    }
+  },
+);
+
+// =================================================================
+// 投稿作成
+// =================================================================
+postRoutes.post(
+  "/",
+  zValidator("json", createPostBodySchema, (result, c) => {
+    if (!result.success) {
+      return c.json(
+        {
+          success: false,
+          message: "投稿内容が不正です",
+          errors: result.error.issues,
+        },
+        400,
+      );
+    }
+  }),
+  async (c) => {
+    const input = c.req.valid("json");
+
+    try {
+      const post = await createPost(input);
+
+      return c.json(
+        {
+          success: true,
+          data: post,
+        },
+        201,
+      );
+    } catch (error) {
+      console.error("[POST /posts Error]:", error);
+
+      if (error instanceof ExternalApiError) {
+        return c.json(
+          {
+            success: false,
+            message: error.message,
+          },
+          502,
+        );
+      }
+
+      return c.json(
+        {
+          success: false,
+          message: "予期せぬエラーが発生しました",
+        },
         500,
       );
     }

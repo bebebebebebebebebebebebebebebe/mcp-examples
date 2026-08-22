@@ -177,4 +177,70 @@ describe("Post MCP tools integration", () => {
       expect(result.isError).toBe(true);
     });
   });
+
+  describe("create-post", () => {
+    it("creates a post", async () => {
+      const client = getClient();
+
+      const input = {
+        userId: 1,
+        title: "MCP integration test",
+        body: "Create post integration test",
+      };
+
+      const result = await client.callTool({
+        name: "create-post",
+        arguments: input,
+      });
+
+      expect(result.isError).not.toBe(true);
+
+      const structuredContent = result.structuredContent as {
+        post: {
+          id: number;
+          userId: number;
+          title: string;
+          body: string;
+        };
+      };
+
+      expect(structuredContent.post).toEqual({
+        id: expect.any(Number),
+        userId: input.userId,
+        title: input.title,
+        body: input.body,
+      });
+
+      expect(structuredContent.post.id).toBeGreaterThan(0);
+    });
+
+    it("rejects an invalid userId through the MCP input schema", async () => {
+      const client = getClient();
+
+      const result = await client.callTool({
+        name: "create-post",
+        arguments: {
+          userId: 0,
+          title: "invalid post",
+          body: "invalid userId",
+        },
+      });
+
+      expect(result.isError).toBe(true);
+    });
+
+    it("rejects missing title through the MCP input schema", async () => {
+      const client = getClient();
+
+      const result = await client.callTool({
+        name: "create-post",
+        arguments: {
+          userId: 1,
+          body: "title is missing",
+        },
+      });
+
+      expect(result.isError).toBe(true);
+    });
+  });
 });

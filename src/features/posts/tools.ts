@@ -1,7 +1,13 @@
 import type { CallToolResult } from "@modelcontextprotocol/server";
 import type { ToolSchema } from "@/mcp/schemas";
-import { getPostByIdParamsSchema, getPostsQuerySchema } from "./schemas";
 import {
+  createPostBodySchema,
+  getPostByIdParamsSchema,
+  getPostsQuerySchema,
+} from "./schemas";
+
+import {
+  createPost,
   ExternalApiError,
   PostNotFoundError,
   getPostById,
@@ -108,4 +114,31 @@ const getPostByIdTool: ToolSchema = {
   },
 };
 
-export const postTools: ToolSchema[] = [getPostsTool, getPostByIdTool];
+/**
+ * 投稿作成ツール
+ */
+const createPostTool: ToolSchema = {
+  name: "create-post",
+  description: "ユーザーID、タイトル、本文を指定して新しい投稿を作成します。",
+  inputSchema: createPostBodySchema,
+
+  async handler(rawArguments) {
+    const input = createPostBodySchema.parse(rawArguments);
+
+    try {
+      const post = await createPost(input);
+
+      return createSuccessResult({
+        post,
+      });
+    } catch (error) {
+      return handleToolError(error, "投稿の作成に失敗しました");
+    }
+  },
+};
+
+export const postTools: ToolSchema[] = [
+  getPostsTool,
+  getPostByIdTool,
+  createPostTool,
+];
