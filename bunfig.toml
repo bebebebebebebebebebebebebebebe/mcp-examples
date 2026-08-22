@@ -1,0 +1,4 @@
+[test]
+root = "."
+preload = ["./tests/integration/mcp/setup.ts"]
+

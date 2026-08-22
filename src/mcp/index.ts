@@ -1,6 +1,7 @@
 import { createMcpHandler, McpServer } from "@modelcontextprotocol/server";
 import { ToolSchema } from "./schemas";
 import { userTools } from "@/features/users/tools";
+import { postTools } from "@/features/posts/tools";
 
 export const createMcpServer = (
   name: string,
@@ -22,8 +23,16 @@ export const createMcpServer = (
   return server;
 };
 
+/**
+ * アプリケーション全体で公開するMCPツールの一覧
+ */
+export const allTools: ToolSchema[] = [
+  ...userTools,
+  ...postTools,
+];
+
 const handler = createMcpHandler(() =>
-  createMcpServer("users-mcp-server", [...userTools], "1.0.0"),
+  createMcpServer("users-mcp-server", allTools, "1.0.0"),
 );
 
 export default handler;
